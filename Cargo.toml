@@ -7,3 +7,4 @@ edition = "2024"
 cairo-m-common = { git = "https://github.com/kkrt-labs/cairo-m.git" }
 cairo-m-compiler-codegen = { git = "https://github.com/kkrt-labs/cairo-m.git" }
 wasmparser = "0.235.0"
+panic-abort = "0.3.2"

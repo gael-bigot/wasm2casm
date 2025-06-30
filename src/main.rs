@@ -3,9 +3,7 @@ mod transpiler;
 use crate::transpiler::CasmBuilder;
 use std::env;
 use std::fs;
-use wasmparser::{
-    CompositeInnerType, ExternalKind, FuncType, FunctionBody, Operator, Parser, Payload,
-};
+use wasmparser::{Parser, Payload};
 
 pub fn disassemble(wasm_file: &[u8]) -> Result<(), Box<dyn std::error::Error>> {
     let parser = Parser::new(0);

@@ -1,8 +1,6 @@
 use cairo_m_common::Opcode;
 use cairo_m_compiler_codegen::{InstructionBuilder, Operand};
 use std::collections::HashMap;
-use std::env;
-use std::fs;
 use wasmparser::{
     CompositeInnerType, ExternalKind, FuncType, FunctionBody, Operator, Parser, Payload,
 };
@@ -10,7 +8,6 @@ use wasmparser::{
 pub struct CasmBuilder {
     pub instructions: Vec<InstructionBuilder>,
     pub labels: HashMap<String, usize>,
-    pub stack: Vec<u32>,
     pub fp_offset: i32,
     pub function_names: HashMap<u32, String>, // Map function index to name
     pub function_types: Vec<u32>,             // Map function index to type index
@@ -22,7 +19,6 @@ impl CasmBuilder {
         Self {
             instructions: Vec::new(),
             labels: HashMap::new(),
-            stack: Vec::new(),
             fp_offset: 0,
             function_names: HashMap::new(),
             function_types: Vec::new(),
@@ -90,9 +86,8 @@ impl CasmBuilder {
         Ok(())
     }
 
+    // TODO write proper Display trait
     pub fn print_module(&self) {
-        println!("=== WebAssembly Module Analysis ===");
-
         // Print type information
         println!("\n=== Function Types ({}) ===", self.types.len());
         for (i, func_type) in self.types.iter().enumerate() {
@@ -270,8 +265,7 @@ impl CasmBuilder {
         function_body: FunctionBody,
         function_index: u32,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        self.labels
-            .insert(function_name.clone(), self.instructions.len());
+        self.push_label(function_name);
 
         // Get parameter count and return type info for this function
         let (param_count, has_return_value) =
