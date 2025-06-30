@@ -232,7 +232,7 @@ impl CasmBuilder {
     pub fn i32_const(&mut self, value: i32) {
         self.push_instruction(
             InstructionBuilder::new(Opcode::StoreImm as u32)
-                .with_off2(0)
+                .with_off2(self.fp_offset)
                 .with_imm(value),
         );
         self.fp_offset += 1;

@@ -6,6 +6,7 @@ int mul(int x, int y){
     return x * y;
 }
 
-int main(int x, int y, int z){
-    return mul(x, add(y, z));
+int foo(int a, int b, int c){
+    int d = 3 * add(b, c);
+    return mul(a, d) - 12;
 }

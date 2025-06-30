@@ -14,6 +14,7 @@ fn mul(a: i32, b: i32) -> i32 {
 }
 
 #[unsafe(no_mangle)]
-fn main(a: i32, b: i32, c: i32) -> i32 {
-    mul(a, add(b, c))
+fn foo(a: i32, b: i32, c: i32) -> i32 {
+    let d = 3 * add(b, c);
+    mul(a, d) - 12
 }

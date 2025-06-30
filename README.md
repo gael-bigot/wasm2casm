@@ -18,8 +18,9 @@ int mul(int x, int y){
     return x * y;
 }
 
-int main(int x, int y, int z){
-    return mul(x, add(y, z));
+int foo(int a, int b, int c){
+    int d = 3 * add(b, c);
+    return mul(a, d) - 12;
 }
 ```
 
@@ -49,10 +50,10 @@ fn mul(a: i32, b: i32) -> i32 {
 }
 
 #[unsafe(no_mangle)]
-fn main(a: i32, b: i32, c: i32) -> i32 {
-    mul(a, add(b, c))
+fn foo(a: i32, b: i32, c: i32) -> i32 {
+    let d = 3 * add(b, c);
+    mul(a, d) - 12
 }
-
 ```
 
 Compile with
@@ -83,14 +84,14 @@ cargo run -- examples/add/target/wasm32-unknown-unknown/release/add.wasm
 === Functions (3) ===
   Function 0: add (type: 0, params: 2)
   Function 1: mul (type: 0, params: 2)
-  Function 2: main (type: 1, params: 3)
+  Function 2: foo (type: 1, params: 3)
 
 === Exported Functions ===
-  add: 0
+  foo: 2
   mul: 1
-  main: 2
+  add: 0
 
-=== Generated CASM Instructions (17) ===
+=== Generated CASM Instructions (21) ===
   [0]: [fp + 0] = [fp + -5]
   [1]: [fp + 1] = [fp + -4]
   [2]: [fp + 0] = [fp + 0] + [fp + 1]
@@ -101,16 +102,20 @@ cargo run -- examples/add/target/wasm32-unknown-unknown/release/add.wasm
   [7]: [fp + 0] = [fp + 0] * [fp + 1]
   [8]: [fp + -3] = [fp + 0]
   [9]: ret
-  [10]: [fp + 0] = [fp + -6]
-  [11]: [fp + 1] = [fp + -5]
-  [12]: [fp + 0] = [fp + 0] + [fp + 1]
-  [13]: [fp + 1] = [fp + -4]
+  [10]: [fp + 0] = [fp + -4]
+  [11]: [fp + 1] = [fp + -6]
+  [12]: [fp + 2] = [fp + -5]
+  [13]: [fp + 1] = [fp + 1] + [fp + 2]
   [14]: [fp + 0] = [fp + 0] * [fp + 1]
-  [15]: [fp + -3] = [fp + 0]
-  [16]: ret
+  [15]: [fp + 1] = 3
+  [16]: [fp + 0] = [fp + 0] * [fp + 1]
+  [17]: [fp + 1] = -12
+  [18]: [fp + 0] = [fp + 0] + [fp + 1]
+  [19]: [fp + -3] = [fp + 0]
+  [20]: ret
 
 === Function Labels ===
-  main -> instruction [10]
-  add -> instruction [0]
   mul -> instruction [5]
+  foo -> instruction [10]
+  add -> instruction [0]
   ```
