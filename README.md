@@ -1,9 +1,9 @@
-#Wasm2Casm
+# Wasm2Casm
 
 Transpiling your projects written in Rust, C and more into Cairo-M assembly.
 Check out the [Cairo-M project](https://github.com/kkrt-labs/cairo-m).
 
-##  1. Create and compile your project
+## 1. Create and compile your project
 
 ### In C
 
@@ -13,7 +13,6 @@ Write some non-libc code :
 int add(int x, int y){
     return x + y;
 }
-
 
 int mul(int x, int y){
     return x * y;
@@ -71,3 +70,47 @@ or
 ```
 cargo run -- examples/add/target/wasm32-unknown-unknown/release/add.wasm
 ```
+
+## Expected result
+
+```
+=== WASM to CASM Transpilation ===
+
+=== Function Types (2) ===
+  Type 0: (I32, I32) -> (I32)
+  Type 1: (I32, I32, I32) -> (I32)
+
+=== Functions (3) ===
+  Function 0: add (type: 0, params: 2)
+  Function 1: mul (type: 0, params: 2)
+  Function 2: main (type: 1, params: 3)
+
+=== Exported Functions ===
+  add: 0
+  mul: 1
+  main: 2
+
+=== Generated CASM Instructions (17) ===
+  [0]: [fp + 0] = [fp + -5]
+  [1]: [fp + 1] = [fp + -4]
+  [2]: [fp + 0] = [fp + 0] + [fp + 1]
+  [3]: [fp + -3] = [fp + 0]
+  [4]: ret
+  [5]: [fp + 0] = [fp + -5]
+  [6]: [fp + 1] = [fp + -4]
+  [7]: [fp + 0] = [fp + 0] * [fp + 1]
+  [8]: [fp + -3] = [fp + 0]
+  [9]: ret
+  [10]: [fp + 0] = [fp + -6]
+  [11]: [fp + 1] = [fp + -5]
+  [12]: [fp + 0] = [fp + 0] + [fp + 1]
+  [13]: [fp + 1] = [fp + -4]
+  [14]: [fp + 0] = [fp + 0] * [fp + 1]
+  [15]: [fp + -3] = [fp + 0]
+  [16]: ret
+
+=== Function Labels ===
+  main -> instruction [10]
+  add -> instruction [0]
+  mul -> instruction [5]
+  ```
